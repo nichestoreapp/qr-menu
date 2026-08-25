@@ -1,0 +1,220 @@
+{
+  "restaurant": {
+    "name": "Ace Café",
+    "tagline": "Tennis Club Kitchen & Bar",
+    "currency": "₺"
+  },
+  "categories": [
+    {
+      "id": "starters",
+      "name": "Starters",
+      "icon": "🥗",
+      "items": [
+        {
+          "id": 1,
+          "name": "Caesar Salad",
+          "description": "Crispy romaine lettuce, parmesan, croutons & classic Caesar dressing",
+          "price": 185,
+          "tags": ["popular"],
+          "image": ""
+        },
+        {
+          "id": 2,
+          "name": "Bruschetta",
+          "description": "Toasted sourdough, fresh tomatoes, basil & balsamic glaze",
+          "price": 145,
+          "tags": [],
+          "image": ""
+        },
+        {
+          "id": 3,
+          "name": "Soup of the Day",
+          "description": "Freshly prepared daily — ask your server for today's selection",
+          "price": 120,
+          "tags": ["vegan"],
+          "image": ""
+        },
+        {
+          "id": 4,
+          "name": "Chicken Wings",
+          "description": "Crispy buffalo wings served with ranch dip & celery sticks",
+          "price": 195,
+          "tags": ["popular"],
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": "mains",
+      "name": "Main Courses",
+      "icon": "🍽️",
+      "items": [
+        {
+          "id": 5,
+          "name": "Club Burger",
+          "description": "200g beef patty, cheddar, caramelized onions, lettuce & house sauce",
+          "price": 285,
+          "tags": ["popular"],
+          "image": ""
+        },
+        {
+          "id": 6,
+          "name": "Grilled Chicken Wrap",
+          "description": "Marinated chicken, avocado, mixed greens & chipotle mayo in a flour tortilla",
+          "price": 245,
+          "tags": [],
+          "image": ""
+        },
+        {
+          "id": 7,
+          "name": "Margherita Pizza",
+          "description": "San Marzano tomatoes, fresh mozzarella, basil & extra virgin olive oil",
+          "price": 220,
+          "tags": ["vegetarian"],
+          "image": ""
+        },
+        {
+          "id": 8,
+          "name": "Grilled Salmon",
+          "description": "Atlantic salmon fillet, seasonal vegetables & lemon butter sauce",
+          "price": 345,
+          "tags": [],
+          "image": ""
+        },
+        {
+          "id": 9,
+          "name": "Pasta Penne",
+          "description": "Penne with creamy pesto sauce, sun-dried tomatoes & grilled chicken",
+          "price": 265,
+          "tags": [],
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": "snacks",
+      "name": "Match Day Snacks",
+      "icon": "🎾",
+      "items": [
+        {
+          "id": 10,
+          "name": "Protein Bowl",
+          "description": "Quinoa, grilled chicken, avocado, edamame, seeds & tahini dressing",
+          "price": 275,
+          "tags": ["healthy", "popular"],
+          "image": ""
+        },
+        {
+          "id": 11,
+          "name": "Energy Bar Plate",
+          "description": "Assorted homemade energy bars — oat, peanut butter & dark chocolate",
+          "price": 130,
+          "tags": ["healthy"],
+          "image": ""
+        },
+        {
+          "id": 12,
+          "name": "Mixed Nuts & Dried Fruit",
+          "description": "Premium roasted nuts and dried fruit mix — perfect pre-match fuel",
+          "price": 110,
+          "tags": ["vegan", "healthy"],
+          "image": ""
+        },
+        {
+          "id": 13,
+          "name": "French Fries",
+          "description": "Hand-cut fries with sea salt, served with ketchup & garlic mayo",
+          "price": 95,
+          "tags": [],
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": "drinks",
+      "name": "Drinks",
+      "icon": "🥤",
+      "items": [
+        {
+          "id": 14,
+          "name": "Fresh Orange Juice",
+          "description": "Freshly squeezed seasonal oranges — no added sugar",
+          "price": 85,
+          "tags": ["popular"],
+          "image": ""
+        },
+        {
+          "id": 15,
+          "name": "Green Smoothie",
+          "description": "Spinach, banana, mango, chia seeds & coconut water",
+          "price": 110,
+          "tags": ["healthy"],
+          "image": ""
+        },
+        {
+          "id": 16,
+          "name": "Iced Americano",
+          "description": "Double shot espresso over ice with cold water",
+          "price": 90,
+          "tags": [],
+          "image": ""
+        },
+        {
+          "id": 17,
+          "name": "Lemonade",
+          "description": "Homemade lemonade with fresh mint & a touch of honey",
+          "price": 75,
+          "tags": ["popular"],
+          "image": ""
+        },
+        {
+          "id": 18,
+          "name": "Turkish Coffee",
+          "description": "Traditional Turkish coffee served in a copper cezve",
+          "price": 65,
+          "tags": [],
+          "image": ""
+        },
+        {
+          "id": 19,
+          "name": "Water (500ml)",
+          "description": "Still or sparkling mineral water",
+          "price": 30,
+          "tags": [],
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": "desserts",
+      "name": "Desserts",
+      "icon": "🍰",
+      "items": [
+        {
+          "id": 20,
+          "name": "Chocolate Lava Cake",
+          "description": "Warm dark chocolate cake with a molten center, served with vanilla ice cream",
+          "price": 165,
+          "tags": ["popular"],
+          "image": ""
+        },
+        {
+          "id": 21,
+          "name": "Fresh Fruit Plate",
+          "description": "Seasonal fresh fruits — a refreshing post-match treat",
+          "price": 120,
+          "tags": ["healthy", "vegan"],
+          "image": ""
+        },
+        {
+          "id": 22,
+          "name": "Cheesecake",
+          "description": "New York style cheesecake with berry compote",
+          "price": 155,
+          "tags": [],
+          "image": ""
+        }
+      ]
+    }
+  ]
+}
