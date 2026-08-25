@@ -485,7 +485,20 @@ const emojiInput = $('#cat-icon');
 
 emojiDisplay.addEventListener('click', (e) => {
   e.stopPropagation();
-  emojiPicker.classList.toggle('open');
+  const isOpen = emojiPicker.classList.toggle('open');
+  if (isOpen) {
+    const rect = emojiDisplay.getBoundingClientRect();
+    const pickerHeight = 380;
+    const spaceBelow = window.innerHeight - rect.bottom - 12;
+    if (spaceBelow >= pickerHeight) {
+      emojiPicker.style.top = (rect.bottom + 8) + 'px';
+      emojiPicker.style.bottom = 'auto';
+    } else {
+      emojiPicker.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+      emojiPicker.style.top = 'auto';
+    }
+    emojiPicker.style.left = rect.left + 'px';
+  }
 });
 
 emojiPicker.addEventListener('click', (e) => {

@@ -499,8 +499,7 @@ body::before {
   animation: slideUp 0.2s ease;
 }
 
-.modal-sm { max-width: 440px; overflow: visible; }
-.modal-sm .modal-body { overflow: visible; }
+.modal-sm { max-width: 440px; }
 
 .modal-header {
   display: flex;
@@ -605,18 +604,16 @@ body::before {
 
 .emoji-picker {
   display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 300;
-  width: 280px;
-  max-height: 360px;
+  position: fixed;
+  z-index: 500;
+  width: 300px;
+  max-height: 380px;
   overflow-y: auto;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-  padding: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  padding: 12px;
 }
 .emoji-picker.open {
   display: block;
