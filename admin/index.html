@@ -70,6 +70,7 @@
         <h2 id="content-title">Kategori Seçin</h2>
         <div class="content-actions">
           <button class="btn btn-accent" id="add-item-btn" hidden>+ Yeni Ürün Ekle</button>
+          <button class="btn btn-ghost" id="edit-category-btn" hidden>✏️ Kategoriyi Düzenle</button>
           <button class="btn btn-danger-ghost" id="delete-category-btn" hidden>🗑️ Kategoriyi Sil</button>
         </div>
       </div>
@@ -150,6 +151,7 @@
           <button class="modal-close" id="cat-modal-close">&times;</button>
         </div>
         <form id="category-form" class="modal-body">
+          <input type="hidden" id="cat-edit-id" value="">
           <div class="form-row">
             <div class="form-group">
               <label for="cat-name-tr">Kategori Adı (TR) <span class="required">*</span></label>

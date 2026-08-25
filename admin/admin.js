@@ -218,6 +218,7 @@ function renderItems() {
   titleEl.textContent = `${category.icon} ${category.name.tr || category.name.en}`;
 
   $('#add-item-btn').hidden = false;
+  $('#edit-category-btn').hidden = false;
   $('#delete-category-btn').hidden = false;
 
   const listEl = $('#items-list');
@@ -372,37 +373,66 @@ async function deleteItem(index) {
 }
 
 /* ---------- Category CRUD ---------- */
-function openCategoryModal() {
+function openCategoryModal(editCatId = null) {
   const modal = $('#category-modal');
   $('#category-form').reset();
-  $('#cat-modal-title').textContent = 'Yeni Kategori';
+  $('#cat-edit-id').value = editCatId || '';
+
+  if (editCatId) {
+    const category = categories.find((c) => c.id === editCatId);
+    if (!category) return;
+    $('#cat-modal-title').textContent = 'Kategoriyi Düzenle';
+    $('#cat-name-tr').value = category.name?.tr || '';
+    $('#cat-name-en').value = category.name?.en || '';
+    $('#cat-icon').value = category.icon || '🍴';
+    $('#cat-icon-display').textContent = category.icon || '🍴';
+    $('#cat-id').value = editCatId;
+    $('#cat-id').disabled = true;
+  } else {
+    $('#cat-modal-title').textContent = 'Yeni Kategori';
+    $('#cat-icon-display').textContent = '🍴';
+    $('#cat-id').disabled = false;
+  }
+
   modal.hidden = false;
 }
 
 $('#category-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const catId = $('#cat-id').value.trim().toLowerCase().replace(/\s+/g, '-') || 'cat-' + Date.now();
+  const editCatId = $('#cat-edit-id').value;
+  const isEdit = !!editCatId;
+
+  const catId = isEdit
+    ? editCatId
+    : ($('#cat-id').value.trim().toLowerCase().replace(/\s+/g, '-') || 'cat-' + Date.now());
+
+  const existingCategory = isEdit ? categories.find((c) => c.id === editCatId) : null;
+
   const catData = {
     name: {
       tr: $('#cat-name-tr').value.trim(),
       en: $('#cat-name-en').value.trim() || $('#cat-name-tr').value.trim()
     },
     icon: $('#cat-icon').value.trim() || '🍴',
-    order: categories.length,
-    items: []
+    order: isEdit ? (existingCategory?.order ?? categories.length) : categories.length,
+    items: isEdit ? (existingCategory?.items || []) : []
   };
 
   try {
     await setDoc(doc(db, 'categories', catId), catData);
-    showToast('Yeni kategori oluşturuldu!');
+    showToast(isEdit ? 'Kategori güncellendi!' : 'Yeni kategori oluşturuldu!');
     closeCategoryModal();
     activeCategoryId = catId;
     await loadData();
     renderItems();
   } catch (err) {
-    showToast('Kategori oluşturma hatası: ' + err.message, 'error');
+    showToast('Kategori kaydetme hatası: ' + err.message, 'error');
   }
+});
+
+$('#edit-category-btn').addEventListener('click', () => {
+  if (activeCategoryId) openCategoryModal(activeCategoryId);
 });
 
 function closeCategoryModal() {
@@ -427,6 +457,7 @@ $('#delete-category-btn').addEventListener('click', async () => {
     // Reset content area
     $('#content-title').textContent = 'Kategori Seçin';
     $('#add-item-btn').hidden = true;
+    $('#edit-category-btn').hidden = true;
     $('#delete-category-btn').hidden = true;
     $('#items-list').innerHTML = `
       <div class="empty-state">
