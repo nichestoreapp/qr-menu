@@ -564,6 +564,64 @@ body::before {
 @keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
+/* ===== DRAG & DROP ===== */
+
+/* Drag handles */
+.drag-handle-tab {
+  font-size: 0.7rem;
+  opacity: 0.35;
+  cursor: grab;
+  letter-spacing: -1px;
+  margin-right: 2px;
+  transition: opacity var(--transition-fast);
+}
+.admin-tab:hover .drag-handle-tab { opacity: 0.7; }
+
+.drag-handle {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  opacity: 0.35;
+  cursor: grab;
+  flex-shrink: 0;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+  user-select: none;
+}
+.item-row:hover .drag-handle {
+  opacity: 0.8;
+  color: var(--color-text-secondary);
+}
+
+/* Dragging state */
+.admin-tab.dragging,
+.item-row.dragging {
+  opacity: 0.4;
+  transform: scale(0.96);
+}
+
+/* Category tab drop indicators */
+.admin-tab.drag-over-left {
+  border-left: 3px solid var(--color-accent) !important;
+  padding-left: 15px;
+}
+.admin-tab.drag-over-right {
+  border-right: 3px solid var(--color-accent) !important;
+  padding-right: 15px;
+}
+
+/* Item row drop indicators */
+.item-row.drag-over-top {
+  border-top: 3px solid var(--color-accent) !important;
+  margin-top: -1px;
+}
+.item-row.drag-over-bottom {
+  border-bottom: 3px solid var(--color-accent) !important;
+  margin-bottom: -1px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .admin-header { padding: 12px 16px; }

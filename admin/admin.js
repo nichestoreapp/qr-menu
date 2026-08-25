@@ -15,6 +15,7 @@ import {
 let categories = [];
 let restaurantInfo = null;
 let activeCategoryId = null;
+let dragState = { type: null, id: null, index: -1 };
 
 /* ---------- Helpers ---------- */
 const $ = (sel) => document.querySelector(sel);
@@ -187,7 +188,8 @@ function renderCategoryTabs() {
 
   categories.forEach((cat) => {
     const active = cat.id === activeCategoryId ? 'active' : '';
-    html += `<button class="admin-tab ${active}" data-cat-id="${cat.id}">
+    html += `<button class="admin-tab ${active}" data-cat-id="${cat.id}" draggable="true">
+      <span class="drag-handle-tab" title="Sürükle">⠿</span>
       ${cat.icon} ${cat.name.tr || cat.name.en || cat.id}
     </button>`;
   });
@@ -195,7 +197,7 @@ function renderCategoryTabs() {
   html += `<button class="admin-tab" data-action="add-category">+ Yeni Kategori</button>`;
   tabsContainer.innerHTML = html;
 
-  // Attach events
+  // Click events
   $$('.admin-tab[data-cat-id]').forEach((tab) => {
     tab.addEventListener('click', () => {
       activeCategoryId = tab.dataset.catId;
@@ -207,6 +209,86 @@ function renderCategoryTabs() {
   $$('.admin-tab[data-action="add-category"]').forEach((tab) => {
     tab.addEventListener('click', openCategoryModal);
   });
+
+  // Category tab drag & drop
+  initTabDragDrop();
+}
+
+function initTabDragDrop() {
+  const tabs = $$('.admin-tab[data-cat-id]');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('dragstart', (e) => {
+      dragState = { type: 'category', id: tab.dataset.catId };
+      tab.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', tab.dataset.catId);
+    });
+
+    tab.addEventListener('dragend', () => {
+      tab.classList.remove('dragging');
+      tabs.forEach((t) => t.classList.remove('drag-over-left', 'drag-over-right'));
+    });
+
+    tab.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (dragState.type !== 'category' || tab.dataset.catId === dragState.id) return;
+      e.dataTransfer.dropEffect = 'move';
+
+      const rect = tab.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+      tabs.forEach((t) => t.classList.remove('drag-over-left', 'drag-over-right'));
+
+      if (e.clientX < midX) {
+        tab.classList.add('drag-over-left');
+      } else {
+        tab.classList.add('drag-over-right');
+      }
+    });
+
+    tab.addEventListener('dragleave', () => {
+      tab.classList.remove('drag-over-left', 'drag-over-right');
+    });
+
+    tab.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      tabs.forEach((t) => t.classList.remove('drag-over-left', 'drag-over-right'));
+      if (dragState.type !== 'category' || tab.dataset.catId === dragState.id) return;
+
+      const fromIndex = categories.findIndex((c) => c.id === dragState.id);
+      const toIndex = categories.findIndex((c) => c.id === tab.dataset.catId);
+      if (fromIndex < 0 || toIndex < 0) return;
+
+      const rect = tab.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+      let insertIndex = e.clientX < midX ? toIndex : toIndex + 1;
+      if (fromIndex < insertIndex) insertIndex--;
+      if (fromIndex === insertIndex) return;
+
+      const [moved] = categories.splice(fromIndex, 1);
+      categories.splice(insertIndex, 0, moved);
+
+      await saveCategoryOrder();
+      renderCategoryTabs();
+    });
+  });
+}
+
+async function saveCategoryOrder() {
+  try {
+    for (let i = 0; i < categories.length; i++) {
+      categories[i].order = i;
+      await setDoc(doc(db, 'categories', categories[i].id), {
+        name: categories[i].name,
+        icon: categories[i].icon,
+        order: i,
+        items: categories[i].items || []
+      });
+    }
+    showToast('Kategori sırası güncellendi!');
+  } catch (err) {
+    showToast('Sıralama hatası: ' + err.message, 'error');
+  }
 }
 
 /* ---------- Items Rendering ---------- */
@@ -234,12 +316,13 @@ function renderItems() {
   }
 
   listEl.innerHTML = items.map((item, index) => {
-    const tagsHtml = (item.tags || []).map(t =>
+    const tagsHtml = (item.tags || []).map((t) =>
       `<span class="item-tag item-tag-${t}">${t}</span>`
     ).join('');
 
     return `
-      <div class="item-row" data-index="${index}">
+      <div class="item-row" data-index="${index}" draggable="true">
+        <div class="drag-handle" title="Sürükleyerek sıralayın">⠿</div>
         <div class="item-icon">${category.icon}</div>
         <div class="item-info">
           <div class="item-name">${item.name.tr || item.name.en || '—'}</div>
@@ -262,6 +345,87 @@ function renderItems() {
   $$('.btn-icon[data-action="delete"]').forEach((btn) => {
     btn.addEventListener('click', () => deleteItem(parseInt(btn.dataset.index)));
   });
+
+  // Item drag & drop
+  initItemDragDrop();
+}
+
+function initItemDragDrop() {
+  const rows = $$('.item-row[draggable]');
+
+  rows.forEach((row) => {
+    row.addEventListener('dragstart', (e) => {
+      dragState = { type: 'item', index: parseInt(row.dataset.index) };
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', row.dataset.index);
+    });
+
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      rows.forEach((r) => r.classList.remove('drag-over-top', 'drag-over-bottom'));
+    });
+
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (dragState.type !== 'item') return;
+      e.dataTransfer.dropEffect = 'move';
+
+      const rect = row.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      rows.forEach((r) => r.classList.remove('drag-over-top', 'drag-over-bottom'));
+
+      if (e.clientY < midY) {
+        row.classList.add('drag-over-top');
+      } else {
+        row.classList.add('drag-over-bottom');
+      }
+    });
+
+    row.addEventListener('dragleave', () => {
+      row.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+
+    row.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      rows.forEach((r) => r.classList.remove('drag-over-top', 'drag-over-bottom'));
+      if (dragState.type !== 'item') return;
+
+      const fromIndex = dragState.index;
+      const toRowIndex = parseInt(row.dataset.index);
+
+      const rect = row.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      let insertIndex = e.clientY < midY ? toRowIndex : toRowIndex + 1;
+      if (fromIndex < insertIndex) insertIndex--;
+      if (fromIndex === insertIndex) return;
+
+      const category = categories.find((c) => c.id === activeCategoryId);
+      if (!category) return;
+
+      const [moved] = category.items.splice(fromIndex, 1);
+      category.items.splice(insertIndex, 0, moved);
+
+      await saveItemOrder();
+      renderItems();
+    });
+  });
+}
+
+async function saveItemOrder() {
+  const category = categories.find((c) => c.id === activeCategoryId);
+  if (!category) return;
+  try {
+    await setDoc(doc(db, 'categories', activeCategoryId), {
+      name: category.name,
+      icon: category.icon,
+      order: category.order,
+      items: category.items
+    });
+    showToast('Ürün sırası güncellendi!');
+  } catch (err) {
+    showToast('Sıralama hatası: ' + err.message, 'error');
+  }
 }
 
 /* ---------- Item CRUD ---------- */
