@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Tenis Cafe — Yönetim Paneli</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎾</text></svg>">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ===== LOGIN VIEW ===== -->
+  <div id="login-view" class="login-view">
+    <div class="login-card">
+      <div class="login-logo">🎾</div>
+      <h1 class="login-title">Tenis Cafe</h1>
+      <p class="login-subtitle">Yönetim Paneli</p>
+
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="login-username">Kullanıcı Adı</label>
+          <input type="text" id="login-username" placeholder="Örn: admin" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Şifre</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div id="login-error" class="login-error" hidden></div>
+        <button type="submit" class="btn btn-primary btn-full" id="login-btn">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN VIEW ===== -->
+  <div id="admin-view" class="admin-view" hidden>
+
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <div class="admin-header-left">
+        <span class="admin-logo">🎾</span>
+        <h1>Tenis Cafe <span class="admin-badge">Admin</span></h1>
+      </div>
+      <div class="admin-header-right">
+        <a href="../" target="_blank" class="btn btn-ghost" id="preview-btn">👁️ Menüyü Gör</a>
+        <button class="btn btn-ghost" id="logout-btn">🚪 Çıkış Yap</button>
+      </div>
+    </header>
+
+    <!-- Migration Banner -->
+    <div id="migration-banner" class="migration-banner" hidden>
+      <div class="migration-content">
+        <span class="migration-icon">📦</span>
+        <div>
+          <strong>Veritabanı boş!</strong>
+          <p>Mevcut menü verilerini Firebase'e aktarmak için butona tıklayın.</p>
+        </div>
+        <button class="btn btn-accent" id="migrate-btn">Verileri Aktar</button>
+      </div>
+    </div>
+
+    <!-- Tabs: Categories -->
+    <div class="admin-tabs" id="admin-tabs">
+      <button class="admin-tab" data-action="add-category" id="add-category-btn">+ Yeni Kategori</button>
+    </div>
+
+    <!-- Items Table -->
+    <div class="admin-content" id="admin-content">
+      <div class="content-header">
+        <h2 id="content-title">Kategori Seçin</h2>
+        <div class="content-actions">
+          <button class="btn btn-accent" id="add-item-btn" hidden>+ Yeni Ürün Ekle</button>
+          <button class="btn btn-danger-ghost" id="delete-category-btn" hidden>🗑️ Kategoriyi Sil</button>
+        </div>
+      </div>
+      <div id="items-list" class="items-list">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>Sol taraftan bir kategori seçin veya yeni bir kategori oluşturun.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ITEM MODAL ===== -->
+    <div id="item-modal" class="modal-overlay" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Ürün Ekle</h3>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <form id="item-form" class="modal-body">
+          <input type="hidden" id="item-edit-index" value="-1">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="item-name-tr">Ürün Adı (TR) <span class="required">*</span></label>
+              <input type="text" id="item-name-tr" placeholder="Örn: Sezar Salata" required>
+            </div>
+            <div class="form-group">
+              <label for="item-name-en">Ürün Adı (EN)</label>
+              <input type="text" id="item-name-en" placeholder="e.g. Caesar Salad">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="item-desc-tr">Açıklama (TR)</label>
+              <textarea id="item-desc-tr" rows="2" placeholder="Ürün açıklaması..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="item-desc-en">Açıklama (EN)</label>
+              <textarea id="item-desc-en" rows="2" placeholder="Product description..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="item-price">Fiyat (₺) <span class="required">*</span></label>
+              <input type="number" id="item-price" min="0" step="1" placeholder="185" required>
+            </div>
+            <div class="form-group">
+              <label for="item-image">Görsel URL</label>
+              <input type="url" id="item-image" placeholder="https://...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Etiketler</label>
+            <div class="tag-checks">
+              <label class="tag-check"><input type="checkbox" name="tags" value="popular"> ⭐ Popüler</label>
+              <label class="tag-check"><input type="checkbox" name="tags" value="healthy"> 💚 Sağlıklı</label>
+              <label class="tag-check"><input type="checkbox" name="tags" value="vegan"> 🌱 Vegan</label>
+              <label class="tag-check"><input type="checkbox" name="tags" value="vegetarian"> 🥬 Vejetaryen</label>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" id="modal-cancel">İptal</button>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== CATEGORY MODAL ===== -->
+    <div id="category-modal" class="modal-overlay" hidden>
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <h3 id="cat-modal-title">Yeni Kategori</h3>
+          <button class="modal-close" id="cat-modal-close">&times;</button>
+        </div>
+        <form id="category-form" class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cat-name-tr">Kategori Adı (TR) <span class="required">*</span></label>
+              <input type="text" id="cat-name-tr" placeholder="Örn: Tatlılar" required>
+            </div>
+            <div class="form-group">
+              <label for="cat-name-en">Kategori Adı (EN)</label>
+              <input type="text" id="cat-name-en" placeholder="e.g. Desserts">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cat-icon">Emoji İkonu</label>
+              <input type="text" id="cat-icon" placeholder="🍰" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label for="cat-id">Kategori ID (İngilizce, boşluksuz)</label>
+              <input type="text" id="cat-id" placeholder="desserts" pattern="[a-z0-9_-]+" title="Sadece küçük harf, rakam, tire ve alt çizgi">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" id="cat-modal-cancel">İptal</button>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
