@@ -446,3 +446,29 @@ $('#item-modal').addEventListener('click', (e) => {
 $('#category-modal').addEventListener('click', (e) => {
   if (e.target === $('#category-modal')) closeCategoryModal();
 });
+
+/* ---------- Emoji Picker ---------- */
+const emojiDisplay = $('#cat-icon-display');
+const emojiPicker = $('#emoji-picker');
+const emojiInput = $('#cat-icon');
+
+emojiDisplay.addEventListener('click', (e) => {
+  e.stopPropagation();
+  emojiPicker.classList.toggle('open');
+});
+
+emojiPicker.addEventListener('click', (e) => {
+  const btn = e.target.closest('.emoji-btn');
+  if (!btn) return;
+  const emoji = btn.textContent.trim();
+  emojiInput.value = emoji;
+  emojiDisplay.textContent = emoji;
+  emojiPicker.classList.remove('open');
+});
+
+// Panelin dışına tıklayınca kapat
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.emoji-picker-wrapper')) {
+    emojiPicker.classList.remove('open');
+  }
+});

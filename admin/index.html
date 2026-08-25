@@ -122,7 +122,6 @@
               <label for="item-image">Görsel URL</label>
               <input type="url" id="item-image" placeholder="https://...">
             </div>
-          </div>
 
           <div class="form-group">
             <label>Etiketler</label>
@@ -162,8 +161,53 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="cat-icon">Emoji İkonu</label>
-              <input type="text" id="cat-icon" placeholder="🍰" maxlength="4">
+              <label>Emoji İkonu</label>
+              <div class="emoji-picker-wrapper">
+                <div class="emoji-selected" id="cat-icon-display" title="Emoji seçmek için tıklayın">🍴</div>
+                <input type="hidden" id="cat-icon" value="🍴">
+                <div class="emoji-picker" id="emoji-picker">
+                  <div class="emoji-group-label">☕ İçecekler</div>
+                  <div class="emoji-grid">
+                    <span class="emoji-btn">☕</span><span class="emoji-btn">🍵</span><span class="emoji-btn">🧋</span>
+                    <span class="emoji-btn">🥤</span><span class="emoji-btn">🍹</span><span class="emoji-btn">🍸</span>
+                    <span class="emoji-btn">🍺</span><span class="emoji-btn">🍷</span><span class="emoji-btn">🧃</span>
+                    <span class="emoji-btn">🥛</span><span class="emoji-btn">🫖</span><span class="emoji-btn">🍶</span>
+                  </div>
+                  <div class="emoji-group-label">🍔 Yiyecekler</div>
+                  <div class="emoji-grid">
+                    <span class="emoji-btn">🍔</span><span class="emoji-btn">🍕</span><span class="emoji-btn">🌮</span>
+                    <span class="emoji-btn">🌯</span><span class="emoji-btn">🥪</span><span class="emoji-btn">🥙</span>
+                    <span class="emoji-btn">🍗</span><span class="emoji-btn">🥩</span><span class="emoji-btn">🍖</span>
+                    <span class="emoji-btn">🍟</span><span class="emoji-btn">🌭</span><span class="emoji-btn">🧆</span>
+                  </div>
+                  <div class="emoji-group-label">🥗 Salatalar & Sağlıklı</div>
+                  <div class="emoji-grid">
+                    <span class="emoji-btn">🥗</span><span class="emoji-btn">🥕</span><span class="emoji-btn">🥑</span>
+                    <span class="emoji-btn">🥦</span><span class="emoji-btn">🫒</span><span class="emoji-btn">🥬</span>
+                  </div>
+                  <div class="emoji-group-label">🍰 Tatlılar</div>
+                  <div class="emoji-grid">
+                    <span class="emoji-btn">🍰</span><span class="emoji-btn">🎂</span><span class="emoji-btn">🧁</span>
+                    <span class="emoji-btn">🍩</span><span class="emoji-btn">🍪</span><span class="emoji-btn">🍫</span>
+                    <span class="emoji-btn">🍦</span><span class="emoji-btn">🍨</span><span class="emoji-btn">🥧</span>
+                    <span class="emoji-btn">🍮</span><span class="emoji-btn">🧇</span><span class="emoji-btn">🥞</span>
+                  </div>
+                  <div class="emoji-group-label">🍽️ Genel</div>
+                  <div class="emoji-grid">
+                    <span class="emoji-btn">🍽️</span><span class="emoji-btn">🍴</span><span class="emoji-btn">🥄</span>
+                    <span class="emoji-btn">🍳</span><span class="emoji-btn">🥘</span><span class="emoji-btn">🫕</span>
+                    <span class="emoji-btn">🥣</span><span class="emoji-btn">🍜</span><span class="emoji-btn">🍲</span>
+                    <span class="emoji-btn">🍱</span><span class="emoji-btn">🍣</span><span class="emoji-btn">🥟</span>
+                  </div>
+                  <div class="emoji-group-label">⭐ Diğer</div>
+                  <div class="emoji-grid">
+                    <span class="emoji-btn">⭐</span><span class="emoji-btn">🔥</span><span class="emoji-btn">❤️</span>
+                    <span class="emoji-btn">🎉</span><span class="emoji-btn">✨</span><span class="emoji-btn">🏷️</span>
+                    <span class="emoji-btn">🎾</span><span class="emoji-btn">🏆</span><span class="emoji-btn">🌿</span>
+                    <span class="emoji-btn">🌶️</span><span class="emoji-btn">🧀</span><span class="emoji-btn">🥚</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label for="cat-id">Kategori ID (İngilizce, boşluksuz)</label>

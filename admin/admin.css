@@ -576,3 +576,95 @@ body::before {
   .admin-header-right { gap: 4px; }
   .btn { padding: 8px 14px; font-size: 0.78rem; }
 }
+
+/* ---------- Emoji Picker ---------- */
+.emoji-picker-wrapper {
+  position: relative;
+}
+
+.emoji-selected {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.emoji-selected:hover {
+  border-color: var(--color-accent);
+  background: var(--color-surface-hover);
+  transform: scale(1.05);
+}
+
+.emoji-picker {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  width: 280px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+.emoji-picker.open {
+  display: block;
+  animation: emojiSlideIn 0.2s ease;
+}
+@keyframes emojiSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.emoji-group-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 8px 0 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+.emoji-group-label:first-child { margin-top: 0; }
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+}
+
+.emoji-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.emoji-btn:hover {
+  background: var(--color-surface-hover);
+  transform: scale(1.25);
+}
+
+/* Scrollbar for emoji picker */
+.emoji-picker::-webkit-scrollbar { width: 6px; }
+.emoji-picker::-webkit-scrollbar-track { background: transparent; }
+.emoji-picker::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
