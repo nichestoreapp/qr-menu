@@ -40,13 +40,8 @@ function formatPrice(price, currency) {
   return `${price}${currency}`;
 }
 
-function getCategoryPlaceholder(categoryId) {
-  const map = {
-    starters: '🥗', mains: '🍽️', snacks: '🎾',
-    drinks: '🥤', desserts: '🍰'
-  };
-  return map[categoryId] || '🍴';
-}
+
+
 
 function getLocStr(objOrString) {
   if (!objOrString) return '';
@@ -130,7 +125,7 @@ function renderCategoryTabs(categories) {
   });
 }
 
-function renderMenuCard(item, categoryId, currency) {
+function renderMenuCard(item, categoryIcon, currency) {
   const tagsHtml = (item.tags || [])
     .map((tag) => {
       const tagLoc = staticTranslations.tags[tag]?.[currentLang] || tag;
@@ -140,7 +135,7 @@ function renderMenuCard(item, categoryId, currency) {
 
   const imageHtml = item.image
     ? `<img src="${item.image}" alt="${getLocStr(item.name)}" loading="lazy">`
-    : `<span class="placeholder-icon">${getCategoryPlaceholder(categoryId)}</span>`;
+    : `<span class="placeholder-icon">${categoryIcon || '🍴'}</span>`;
 
   return `
     <article class="menu-card" id="item-${item.id}">
@@ -192,7 +187,7 @@ function renderMenu() {
           <span class="section-line"></span>
         </h2>
         <div class="menu-items">
-          ${filteredItems.map((item) => renderMenuCard(item, category.id, currency)).join('')}
+          ${filteredItems.map((item) => renderMenuCard(item, category.icon, currency)).join('')}
         </div>
       </section>`;
   });
