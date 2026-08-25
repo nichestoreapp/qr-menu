@@ -9,6 +9,26 @@
   let menuData = null;
   let activeCategory = 'all';
   let searchQuery = '';
+  let currentLang = 'tr'; // Default language
+
+  const staticTranslations = {
+    all: { tr: "Tümü", en: "All" },
+    searchPlaceholder: { tr: "Menüde ara...", en: "Search menu..." },
+    emptySearchHtml: { 
+      tr: (q) => `Aradığınız "<strong>${escapeHtml(q)}</strong>" ile eşleşen ürün bulunamadı.`,
+      en: (q) => `No items found matching<br>"<strong>${escapeHtml(q)}</strong>"`
+    },
+    errorHtml: {
+      tr: `Menü yüklenemedi.<br>Lütfen sayfayı yenilemeyi deneyin.`,
+      en: `Could not load the menu.<br>Please try refreshing the page.`
+    },
+    tags: {
+      popular: { tr: "Popüler", en: "Popular" },
+      healthy: { tr: "Sağlıklı", en: "Healthy" },
+      vegan: { tr: "Vegan", en: "Vegan" },
+      vegetarian: { tr: "Vejetaryen", en: "Vegetarian" }
+    }
+  };
 
   /* ---------- DOM References ---------- */
   const app = document.getElementById('app');
@@ -32,6 +52,13 @@
       desserts: '🍰',
     };
     return map[categoryId] || '🍴';
+  }
+
+  /** Get localized string from object or string */
+  function getLocStr(objOrString) {
+    if (!objOrString) return '';
+    if (typeof objOrString === 'string') return objOrString;
+    return objOrString[currentLang] || objOrString['en'] || '';
   }
 
   /* ---------- Render Functions ---------- */
@@ -58,12 +85,12 @@
     if (!nav) return;
 
     let html = `<button class="category-tab active" data-category="all">
-      <span class="tab-icon">✦</span> All
+      <span class="tab-icon">✦</span> ${staticTranslations.all[currentLang]}
     </button>`;
 
     categories.forEach((cat) => {
       html += `<button class="category-tab" data-category="${cat.id}">
-        <span class="tab-icon">${cat.icon}</span> ${cat.name}
+        <span class="tab-icon">${cat.icon}</span> ${getLocStr(cat.name)}
       </button>`;
     });
 
@@ -84,11 +111,14 @@
 
   function renderMenuCard(item, categoryId, currency) {
     const tagsHtml = item.tags
-      .map((tag) => `<span class="tag tag-${tag}">${tag}</span>`)
+      .map((tag) => {
+        const tagLoc = staticTranslations.tags[tag]?.[currentLang] || tag;
+        return `<span class="tag tag-${tag}">${tagLoc}</span>`;
+      })
       .join('');
 
     const imageHtml = item.image
-      ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
+      ? `<img src="${item.image}" alt="${getLocStr(item.name)}" loading="lazy">`
       : `<span class="placeholder-icon">${getCategoryPlaceholder(categoryId)}</span>`;
 
     return `
@@ -96,10 +126,10 @@
         <div class="card-image">${imageHtml}</div>
         <div class="card-body">
           <div class="card-header">
-            <h3 class="card-name">${item.name}</h3>
+            <h3 class="card-name">${getLocStr(item.name)}</h3>
             <span class="card-price">${formatPrice(item.price, currency)}</span>
           </div>
-          <p class="card-description">${item.description}</p>
+          <p class="card-description">${getLocStr(item.description)}</p>
           ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
         </div>
       </article>`;
@@ -121,10 +151,17 @@
       // Filter items by search
       const filteredItems = category.items.filter((item) => {
         if (!query) return true;
+        
+        const itemNameLoc = getLocStr(item.name).toLowerCase();
+        const itemDescLoc = getLocStr(item.description).toLowerCase();
+        
         return (
-          item.name.toLowerCase().includes(query) ||
-          item.description.toLowerCase().includes(query) ||
-          item.tags.some((t) => t.toLowerCase().includes(query))
+          itemNameLoc.includes(query) ||
+          itemDescLoc.includes(query) ||
+          item.tags.some((t) => {
+            const tagLoc = (staticTranslations.tags[t]?.[currentLang] || t).toLowerCase();
+            return tagLoc.includes(query);
+          })
         );
       });
 
@@ -136,7 +173,7 @@
         <section class="category-section" id="section-${category.id}">
           <h2 class="category-section-title">
             <span class="section-icon">${category.icon}</span>
-            ${category.name}
+            ${getLocStr(category.name)}
             <span class="section-line"></span>
           </h2>
           <div class="menu-items">
@@ -149,7 +186,7 @@
       html = `
         <div class="empty-state">
           <div class="empty-icon">🔍</div>
-          <p>No items found matching<br>"<strong>${escapeHtml(query)}</strong>"</p>
+          <p>${staticTranslations.emptySearchHtml[currentLang](query)}</p>
         </div>`;
     }
 
@@ -162,10 +199,12 @@
     return div.innerHTML;
   }
 
-  /* ---------- Search ---------- */
+  /* ---------- Interactions ---------- */
   function initSearch() {
     const input = $('#search-input');
     if (!input) return;
+    
+    input.placeholder = staticTranslations.searchPlaceholder[currentLang];
 
     let debounceTimer;
     input.addEventListener('input', () => {
@@ -177,12 +216,45 @@
     });
   }
 
+  function updateStaticTexts() {
+    const tagline = $('.header-text p');
+    if (tagline && menuData) {
+      tagline.textContent = getLocStr(menuData.restaurant.tagline);
+    }
+    const input = $('#search-input');
+    if (input) {
+      input.placeholder = staticTranslations.searchPlaceholder[currentLang];
+    }
+  }
+
+  function initLangSwitcher() {
+    $$('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedLang = btn.dataset.lang;
+        if (currentLang === selectedLang) return;
+        
+        currentLang = selectedLang;
+        
+        // Update UI buttons
+        $$('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Update content
+        updateStaticTexts();
+        renderCategoryTabs(menuData.categories);
+        renderMenu();
+      });
+    });
+  }
+
   /* ---------- Bootstrap ---------- */
   async function init() {
     renderSkeleton();
+    initLangSwitcher();
 
     try {
-      const response = await fetch('./menu.json');
+      // Added a cache buster timestamp parameter for development purposes, but fetching normal in prod
+      const response = await fetch('./menu.json?v=' + new Date().getTime());
       if (!response.ok) throw new Error('Failed to load menu data');
       menuData = await response.json();
     } catch (err) {
@@ -192,7 +264,7 @@
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">⚠️</div>
-            <p>Could not load the menu.<br>Please try refreshing the page.</p>
+            <p>${staticTranslations.errorHtml[currentLang]}</p>
           </div>`;
       }
       return;
@@ -200,9 +272,9 @@
 
     // Update header
     const h1 = $('h1');
-    const tagline = $('.header-text p');
     if (h1) h1.textContent = menuData.restaurant.name;
-    if (tagline) tagline.textContent = menuData.restaurant.tagline;
+    
+    updateStaticTexts();
 
     // Render
     renderCategoryTabs(menuData.categories);
