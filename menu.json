@@ -1,6 +1,9 @@
 {
   "restaurant": {
-    "name": "Ace Café",
+    "name": {
+      "tr": "Tenis Cafe",
+      "en": "Tennis Cafe"
+    },
     "tagline": {
       "tr": "Tenis Kulübü Mutfak & Bar",
       "en": "Tennis Club Kitchen & Bar"

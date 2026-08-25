@@ -217,6 +217,10 @@
   }
 
   function updateStaticTexts() {
+    const h1 = $('h1');
+    if (h1 && menuData) {
+      h1.textContent = getLocStr(menuData.restaurant.name);
+    }
     const tagline = $('.header-text p');
     if (tagline && menuData) {
       tagline.textContent = getLocStr(menuData.restaurant.tagline);
@@ -225,6 +229,7 @@
     if (input) {
       input.placeholder = staticTranslations.searchPlaceholder[currentLang];
     }
+    document.title = getLocStr(menuData.restaurant.name) + " — Menu";
   }
 
   function initLangSwitcher() {
@@ -271,9 +276,6 @@
     }
 
     // Update header
-    const h1 = $('h1');
-    if (h1) h1.textContent = menuData.restaurant.name;
-    
     updateStaticTexts();
 
     // Render
